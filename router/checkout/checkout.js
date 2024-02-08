@@ -1,6 +1,7 @@
 const db = require("../../models");
 const router = require("express").Router();
 const randomID = require("../../components/randomID");
+const socketController = require("../../controllers/socketController");
 
 router.post("/", async (req, res) => {
   try {
@@ -15,6 +16,7 @@ router.post("/", async (req, res) => {
 
     const Tid = await randomID.generateID(db.transaction);
 
+    socketController.emitTransaction(table_id, Tid);
     const t = await db.sequelize.transaction();
 
     try {
@@ -24,7 +26,7 @@ router.post("/", async (req, res) => {
       await db.transaction.create(
         {
           transaction_id: Tid,
-          clerk_id: req.ses.user_id,
+          clerk_id: "kasir",
           table_id: table_id,
         },
         { transaction: t },
@@ -66,12 +68,14 @@ router.post("/", async (req, res) => {
         );
       }
 
-      await db.user.update(
-        { balance: db.sequelize.literal(`balance + ${totalPrice}`) },
-        { where: { user_id: req.ses.user_id }, transaction: t },
-      );
+      //2 februari
+      // await db.user.update(
+      //   { balance: db.sequelize.literal(`balance + ${totalPrice}`) },
+      //   { where: { user_id: req.ses.user_id }, transaction: t },
+      // );
 
       await t.commit();
+
       res
         .status(200)
         .json({ message: message + "transaction created successfully." });

@@ -1,14 +1,14 @@
 const db = require('../models');
 
-function cek(allowed = [], isQuery = false) {
+function cek(allowed) {
     return async (req, res, next) => {
-        const session_id = !isQuery? req.headers.authorization : req.query.auth;
+        const session_id = req.headers.authorization;
 
-        if (!session_id || !session_id.startsWith('Bearer ') && !isQuery) {
+        if (!session_id || !session_id.startsWith('Bearer ')) {
             return res.status(401).json({ success: false, message: 'Unauthorized - Bearer token is missing' });
         }
 
-        const token = !isQuery? session_id.split(' ')[1] : session_id;
+        const token = session_id.split(' ')[1];
 
         try {
 

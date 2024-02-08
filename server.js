@@ -1,3 +1,7 @@
+// email zaditgans671555@gmail.com
+//instagram@insvrgent
+//kodingan hanya saya dan tuhan yang tau
+//siapa tau pengen mukul saya
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
@@ -29,7 +33,7 @@ const PORT = process.env.PORT;
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://kz7vvs-3000.csb.app",
     }
 });
 
