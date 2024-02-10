@@ -7,26 +7,35 @@ let device_id = "";
 let currentTrack = [];
 let clerkSockets = {};
 
+//if theres a success transaction, this will be called
 const emitTransaction = (table_id, transaction_id) => {
   if (!io) {
     console.error("Socket.IO not initialized");
     return;
   }
-  io.emit("transaction", { table_id, transaction_id });
+
+  Object.values(clerkSockets).forEach(socketId => {
+    console.error(socketId);
+    io.to(socketId).emit("transaction", { table_id, transaction_id });
+  });
 };
 
-const signClerk = (user_id) => {=
-  clerkSockets[user_id] = io;
+//this will be called by signcheck if theres a clerk load
+const signClerk = (socketId, user_id) => {
+  clerkSockets[user_id] = socketId;
 };
 
+//this will be called if clerk is login spotify
 const setAccessToken = (token) => {
   access_token = token;
 };
 
+//this will be called if clerk is login spotify
 const setDeviceId = (token) => {
   device_id = token;
 };
 
+//this will be called sometime by its own interval
 const getCurrentTrack = async (io) => {
   try {
     if (access_token === "") throw "no token";
@@ -36,7 +45,7 @@ const getCurrentTrack = async (io) => {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
-      },
+      }
     );
 
     const { item } = response.data;
@@ -66,6 +75,7 @@ const getCurrentTrack = async (io) => {
   }
 };
 
+//this will be called when clerk is login, to detect if there a song played
 const emitCurrentTrack = async (io) => {
   try {
     io.emit("current", currentTrack);
@@ -79,10 +89,10 @@ module.exports = (socketIo) => {
   io.on("connection", (socket) => {
     io.emit("current", currentTrack);
     console.log("A user connected");
-    
+
     socket.on("disconnect", () => {
       console.log("User disconnected");
-      // Remove the user_id and socket.id association on disconnect
+      // Remove the user_id association on disconnect
       Object.keys(clerkSockets).forEach((user_id) => {
         if (clerkSockets[user_id] === socket.id) {
           delete clerkSockets[user_id];
@@ -95,6 +105,7 @@ module.exports = (socketIo) => {
       io.emit("chat message", msg); // Broadcast the message to all clients
     });
 
+    //will be called if a user search for a song
     socket.on("reqtrack", async (data) => {
       const { searchTerm } = data;
       const socketId = socket.id;
@@ -106,7 +117,7 @@ module.exports = (socketIo) => {
             headers: {
               Authorization: `Bearer ${access_token}`,
             },
-          },
+          }
         );
 
         const tracks = response.data.tracks.items;
@@ -125,6 +136,7 @@ module.exports = (socketIo) => {
       }
     });
 
+    //will be called if user request a song
     socket.on("addtrack", async (trackId) => {
       console.log(trackId);
       console.log(device_id);
@@ -138,7 +150,7 @@ module.exports = (socketIo) => {
             headers: {
               Authorization: `Bearer ${access_token}`,
             },
-          },
+          }
         );
 
         // Assuming you want to inform the client that the track was added successfully
@@ -153,12 +165,16 @@ module.exports = (socketIo) => {
       }
     });
 
+    //called on user login
     emitCurrentTrack(io);
   });
 
+  //called on start
   getCurrentTrack(io);
 };
+
 module.exports.signClerk = signClerk;
 module.exports.setAccessToken = setAccessToken;
 module.exports.setDeviceId = setDeviceId;
 module.exports.emitTransaction = emitTransaction;
+module.exports.clerkSockets = clerkSockets;

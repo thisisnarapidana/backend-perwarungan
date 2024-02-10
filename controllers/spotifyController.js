@@ -45,7 +45,7 @@ authRouter.get("/callback", async (req, res) => {
     setInterval(refreshToken, 1000 * 60 * 60); // 1 hour interval
 
     // Redirect the user back to the frontend with the tokens
-    res.redirect(`https://kz7vvs-3000.csb.app`);
+    res.redirect(`http://localhost:3000`);
   } catch (error) {
     console.error("Error during authorization:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -71,7 +71,7 @@ authRouter.get("/check", auth(["clerk"]), async (req, res) => {
       res.status(401).json({ error: "Token is invalid" });
     }
   } catch (error) {
-    console.error("Error during token validation:", error);
+    // console.error("Error during token validation:", error);
     res.status(401).json({ error: "Internal server error" });
   }
 });
@@ -101,7 +101,7 @@ async function checkSubscription(res) {
   }   
 }
 
-// Function to exchange authorization code for access token and refresh token
+// Function to exchange authorization code for access token and refresh token after clerk successed login with spotify 
 async function exchangeCodeForTokens(code) {
   const authOptions = {
     url: "https://accounts.spotify.com/api/token",

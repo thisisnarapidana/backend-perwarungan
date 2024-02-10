@@ -33,7 +33,7 @@ const PORT = process.env.PORT;
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
-        origin: "https://kz7vvs-3000.csb.app",
+        origin: "http://localhost:3000",
     }
 });
 
