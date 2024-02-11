@@ -16,7 +16,6 @@ router.post("/", async (req, res) => {
 
     const Tid = await randomID.generateID(db.transaction);
 
-    socketController.emitTransaction(table_id, Tid);
     const t = await db.sequelize.transaction();
 
     try {
@@ -28,6 +27,7 @@ router.post("/", async (req, res) => {
           transaction_id: Tid,
           clerk_id: "kasir",
           table_id: table_id,
+          status: "menunggu konfirmasi",
         },
         { transaction: t },
       );
@@ -75,6 +75,7 @@ router.post("/", async (req, res) => {
       // );
 
       await t.commit();
+      socketController.emitTransaction(Tid);
 
       res
         .status(200)

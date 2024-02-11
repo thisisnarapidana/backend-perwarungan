@@ -11,6 +11,19 @@ var routerCheckout = require("require-directory")(
   "../router/checkout/",
 );
 
+//edit
+router.use("/process", auth(["clerk"]), routerCheckout.editTransactionProcess);
+
+//get all being processed
+router.use("/process", auth(["clerk"]), routerCheckout.transactionInProcess);
+
+//get all user transaction still processed or not
+router.use(
+  "/usertransaction",
+  auth(["clerk"], ["guest"]),
+  routerCheckout.userTransaction,
+);
+
 router.use("/checkout", auth(["guest"]), routerCheckout.checkout);
 
 router.use("/kulakan", auth(["admin", "clerk"]), routerCheckout.kulakan);

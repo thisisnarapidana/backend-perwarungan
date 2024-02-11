@@ -35,8 +35,6 @@ async function createItem(req, res) {
     await db.transaction.create(
       {
         transaction_id: Tid,
-        clerk_id: req.ses.user_id,
-        table_id: "clerk table",
       },
       { transaction: t },
     );

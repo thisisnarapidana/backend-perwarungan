@@ -4,13 +4,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    buyer_id: {
+      type: DataTypes.STRING,
+    },
     clerk_id: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     table_id: {
       type: DataTypes.STRING,
-      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
     },
   });
 

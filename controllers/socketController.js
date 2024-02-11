@@ -8,15 +8,15 @@ let currentTrack = [];
 let clerkSockets = {};
 
 //if theres a success transaction, this will be called
-const emitTransaction = (table_id, transaction_id) => {
+const emitTransaction = (transaction_id) => {
   if (!io) {
     console.error("Socket.IO not initialized");
     return;
   }
 
-  Object.values(clerkSockets).forEach(socketId => {
+  Object.values(clerkSockets).forEach((socketId) => {
     console.error(socketId);
-    io.to(socketId).emit("transaction", { table_id, transaction_id });
+    io.to(socketId).emit("transaction", { transaction_id });
   });
 };
 
@@ -45,7 +45,7 @@ const getCurrentTrack = async (io) => {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
-      }
+      },
     );
 
     const { item } = response.data;
@@ -107,6 +107,7 @@ module.exports = (socketIo) => {
 
     //will be called if a user search for a song
     socket.on("reqtrack", async (data) => {
+      console.log(socket.id);
       const { searchTerm } = data;
       const socketId = socket.id;
 
@@ -117,7 +118,7 @@ module.exports = (socketIo) => {
             headers: {
               Authorization: `Bearer ${access_token}`,
             },
-          }
+          },
         );
 
         const tracks = response.data.tracks.items;
@@ -150,7 +151,7 @@ module.exports = (socketIo) => {
             headers: {
               Authorization: `Bearer ${access_token}`,
             },
-          }
+          },
         );
 
         // Assuming you want to inform the client that the track was added successfully
