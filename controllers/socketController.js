@@ -35,6 +35,10 @@ const setDeviceId = (token) => {
   device_id = token;
 };
 
+const clearCurrentTrack = () => {
+  currentTrack = [];
+};
+
 //this will be called sometime by its own interval
 const getCurrentTrack = async (io) => {
   try {
@@ -63,7 +67,13 @@ const getCurrentTrack = async (io) => {
     console.log("Artists:", artists);
 
     // Update current track information
-    currentTrack = item;
+    if (response.data.is_playing) currentTrack = item;
+    else {
+      currentTrack = [];
+      io.emit("current", currentTrack);
+
+      throw "no track";
+    }
 
     // Emit current track information to all sockets
     io.emit("current", currentTrack);
@@ -174,8 +184,9 @@ module.exports = (socketIo) => {
   getCurrentTrack(io);
 };
 
+module.exports.clerkSockets = clerkSockets;
 module.exports.signClerk = signClerk;
 module.exports.setAccessToken = setAccessToken;
 module.exports.setDeviceId = setDeviceId;
 module.exports.emitTransaction = emitTransaction;
-module.exports.clerkSockets = clerkSockets;
+module.exports.clearCurrentTrack = clearCurrentTrack;

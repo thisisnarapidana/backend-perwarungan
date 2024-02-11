@@ -27,6 +27,7 @@ authRouter.get("/logout", auth(["clerk"]), (req, res) => {
   access_token = "";
   refresh_token = "";
   device_id = "";
+  socketController.clearCurrentTrack();
 });
 
 authRouter.get("/callback", async (req, res) => {
