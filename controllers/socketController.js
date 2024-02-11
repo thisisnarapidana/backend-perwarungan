@@ -169,10 +169,26 @@ module.exports = (socketIo) => {
       } catch (error) {
         console.error("Error adding track to queue:", error);
         // Emit an error event to inform the client about the failure
-        io.to(socketId).emit("trackadded", {
+        io.to(socketId).emit("tracknotadded", {
           success: false,
           error: error.message,
         });
+      }
+
+      if (currentTrack.length > 0) return;
+
+      try {
+        await axios.put(
+          `https://api.spotify.com/v1/me/player/play`,
+          null, // No data to send in the request body
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.error("Error resuming queue:", error);
       }
     });
 
