@@ -16,8 +16,31 @@ const emitTransaction = (transaction_id) => {
   }
   console.log("new transaction");
   Object.values(clerkSockets).forEach((socketId) => {
-    console.error(socketId);
     io.to(socketId).emit("transaction", { transaction_id });
+  });
+};
+
+const emitFollowUp = (buyer_id) => {
+  console.log(buyer_id);
+  if (!io) {
+    console.error("Socket.IO not initialized");
+    return;
+  }
+
+  console.log("Follow up");
+
+  // Iterate through the guestSockets object
+  Object.entries(guestSockets).forEach(([user_id, socketId]) => {
+    // Check if the user_id matches the buyer_id
+    console.log("check");
+    console.log("check");
+    console.log("check");
+    console.log("check");
+    console.log({ user_id: user_id, buyer_id: buyer_id, socketId: socketId });
+    if (user_id === buyer_id) {
+      // If it matches, emit the follow-up message to the corresponding socket
+      io.to(socketId).emit("followUp");
+    }
   });
 };
 
@@ -220,4 +243,5 @@ module.exports.signGuest = signGuest;
 module.exports.setAccessToken = setAccessToken;
 module.exports.setDeviceId = setDeviceId;
 module.exports.emitTransaction = emitTransaction;
+module.exports.emitFollowUp = emitFollowUp;
 module.exports.clearCurrentTrack = clearCurrentTrack;

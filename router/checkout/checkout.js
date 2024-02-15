@@ -26,9 +26,10 @@ router.post("/", async (req, res) => {
       await db.transaction.create(
         {
           transaction_id: Tid,
-          clerk_id: "kasir",
+          buyer_id: req.ses.user_id,
+          // clerk_id: "kasir",
           table_id: table_id,
-          status: "menunggu diproses",
+          status: 11, //menunggu diproses == 11 // diproses == 22 // selesai == 33 // dibatalkan == 43
         },
         { transaction: t },
       );

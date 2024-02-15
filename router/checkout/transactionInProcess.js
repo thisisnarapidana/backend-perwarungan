@@ -7,12 +7,7 @@ router.get("/", async (req, res) => {
     const transactions = await db.transaction.findAll({
       where: {
         status: {
-          [Op.or]: [
-            "menunggu diproses",
-            "diproses",
-            "diantarkan",
-            "dibatalkan",
-          ],
+          [Op.or]: [11, 22, 33, 43],
         },
       },
       include: [
