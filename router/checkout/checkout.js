@@ -10,6 +10,7 @@ router.post("/", async (req, res) => {
     const cek = await db.table.findOne({
       where: { table_id: table_id },
     });
+    console.log("processing transaction");
     if (!cek) throw new Error("meja tidak tersedia");
 
     await db.sequelize.sync();
@@ -27,7 +28,7 @@ router.post("/", async (req, res) => {
           transaction_id: Tid,
           clerk_id: "kasir",
           table_id: table_id,
-          status: "menunggu konfirmasi",
+          status: "menunggu diproses",
         },
         { transaction: t },
       );

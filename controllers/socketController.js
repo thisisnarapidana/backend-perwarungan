@@ -6,6 +6,7 @@ let access_token = "";
 let device_id = "";
 let currentTrack = [];
 let clerkSockets = {};
+let guestSockets = {};
 
 //if theres a success transaction, this will be called
 const emitTransaction = (transaction_id) => {
@@ -13,7 +14,7 @@ const emitTransaction = (transaction_id) => {
     console.error("Socket.IO not initialized");
     return;
   }
-
+  console.log("new transaction");
   Object.values(clerkSockets).forEach((socketId) => {
     console.error(socketId);
     io.to(socketId).emit("transaction", { transaction_id });
@@ -23,6 +24,13 @@ const emitTransaction = (transaction_id) => {
 //this will be called by signcheck if theres a clerk load
 const signClerk = (socketId, user_id) => {
   clerkSockets[user_id] = socketId;
+  console.log(clerkSockets);
+};
+
+//this will be called by signcheck if theres a clerk load
+const signGuest = (socketId, user_id) => {
+  guestSockets[user_id] = socketId;
+  console.log(guestSockets);
 };
 
 //this will be called if clerk is login spotify
@@ -106,6 +114,12 @@ module.exports = (socketIo) => {
       Object.keys(clerkSockets).forEach((user_id) => {
         if (clerkSockets[user_id] === socket.id) {
           delete clerkSockets[user_id];
+        }
+      });
+
+      Object.keys(guestSockets).forEach((user_id) => {
+        if (guestSockets[user_id] === socket.id) {
+          delete guestSockets[user_id];
         }
       });
     });
@@ -200,8 +214,9 @@ module.exports = (socketIo) => {
   getCurrentTrack(io);
 };
 
-module.exports.clerkSockets = clerkSockets;
+// module.exports.clerkSockets = clerkSockets;
 module.exports.signClerk = signClerk;
+module.exports.signGuest = signGuest;
 module.exports.setAccessToken = setAccessToken;
 module.exports.setDeviceId = setDeviceId;
 module.exports.emitTransaction = emitTransaction;

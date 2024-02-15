@@ -4,16 +4,39 @@ const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
   try {
-    const get = await db.transaction.findAll({
+    const transactions = await db.transaction.findAll({
       where: {
-        status: { [Op.nt]: "selesai" },
+        status: {
+          [Op.or]: [
+            "menunggu diproses",
+            "diproses",
+            "diantarkan",
+            "dibatalkan",
+          ],
+        },
       },
+      include: [
+        {
+          model: db.detailed_transaction,
+          attributes: ["detailed_transaction_id", "qty_stock_change"],
+          include: [
+            {
+              model: db.item,
+              attributes: ["item_id", "price", "name", "image_url"],
+            },
+          ],
+        },
+        {
+          model: db.table,
+          attributes: ["table_id", "no_table"],
+        },
+      ],
     });
 
-    res.status(200).json({ transactions: get });
+    return res.status(200).json(transactions);
   } catch (error) {
-    console.error("get transaction failed:", error);
-    res.status(500).json(error.message);
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 

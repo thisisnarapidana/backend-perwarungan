@@ -11,11 +11,15 @@ var routerCheckout = require("require-directory")(
   "../router/checkout/",
 );
 
+//get all being processed
+router.use(
+  "/process",
+  auth(["admin", "clerk"]),
+  routerCheckout.transactionInProcess,
+);
+
 //edit
 router.use("/process", auth(["clerk"]), routerCheckout.editTransactionProcess);
-
-//get all being processed
-router.use("/process", auth(["clerk"]), routerCheckout.transactionInProcess);
 
 //get all user transaction still processed or not
 router.use(

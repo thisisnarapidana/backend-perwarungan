@@ -18,4 +18,6 @@ router.get("/income/:startDate/:endDate", routerDetail.income);
 
 router.get("/iteminfo/:startDate/:endDate", routerDetail.iteminfo);
 
+router.delete("/deleteAll", routerDetail.deleteAllTransactions);
+
 module.exports = router;
