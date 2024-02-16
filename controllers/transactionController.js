@@ -11,6 +11,8 @@ var routerCheckout = require("require-directory")(
   "../router/checkout/",
 );
 
+router.use("/mytransactions", auth(["guest"]), routerCheckout.myTransactions);
+
 //get all being processed
 router.use(
   "/process",
@@ -20,6 +22,13 @@ router.use(
 
 //edit
 router.use("/process", auth(["clerk"]), routerCheckout.editTransactionProcess);
+
+//cancel
+router.use(
+  "/process",
+  auth(["clerk", "guest"]),
+  routerCheckout.cancelTransactionProcess,
+);
 
 //get all user transaction still processed or not
 router.use(

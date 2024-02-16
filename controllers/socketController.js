@@ -21,24 +21,13 @@ const emitTransaction = (transaction_id) => {
 };
 
 const emitFollowUp = (buyer_id) => {
-  console.log(buyer_id);
   if (!io) {
     console.error("Socket.IO not initialized");
     return;
   }
 
-  console.log("Follow up");
-
-  // Iterate through the guestSockets object
   Object.entries(guestSockets).forEach(([user_id, socketId]) => {
-    // Check if the user_id matches the buyer_id
-    console.log("check");
-    console.log("check");
-    console.log("check");
-    console.log("check");
-    console.log({ user_id: user_id, buyer_id: buyer_id, socketId: socketId });
     if (user_id === buyer_id) {
-      // If it matches, emit the follow-up message to the corresponding socket
       io.to(socketId).emit("followUp");
     }
   });

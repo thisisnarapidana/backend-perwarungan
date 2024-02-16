@@ -11,17 +11,18 @@ router.put("/", async (req, res) => {
       include: [{ model: db.transaction, attributes: ["buyer_id"] }],
     });
 
-    if (detailedTransaction.dataValues.status === "33") return res.status(400);
+    if (detailedTransaction.dataValues.status !== "11") return res.status(400);
 
     await db.detailed_transaction.update(
       {
-        status: db.sequelize.literal(`status + ${11}`),
+        status: "43",
       },
       {
         where: { detailed_transaction_id: detailed_transaction_id },
       },
     );
 
+    socketController.emitTransaction();
     socketController.emitFollowUp(detailedTransaction.transaction.buyer_id);
 
     res.status(200).json({ message: "follow up transaction successfully." });

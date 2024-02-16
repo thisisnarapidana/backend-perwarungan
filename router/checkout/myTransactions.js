@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 router.get("/", async (req, res) => {
   try {
     const transactions = await db.transaction.findAll({
+      where: { buyer_id: req.ses.user_id },
       include: [
         {
           model: db.detailed_transaction,

@@ -29,7 +29,6 @@ router.post("/", async (req, res) => {
           buyer_id: req.ses.user_id,
           // clerk_id: "kasir",
           table_id: table_id,
-          status: 11, //menunggu diproses == 11 // diproses == 22 // selesai == 33 // dibatalkan == 43
         },
         { transaction: t },
       );
@@ -60,6 +59,7 @@ router.post("/", async (req, res) => {
             transaction_id: Tid,
             item_id: i[0],
             qty_stock_change: purchased_qty * -1,
+            status: 11, //menunggu diproses == 11 // diproses == 22 // selesai == 33 // dibatalkan == 43
           },
           { transaction: t },
         );

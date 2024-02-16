@@ -13,9 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     table_id: {
       type: DataTypes.STRING,
     },
-    status: {
-      type: DataTypes.STRING,
-    },
   });
 
   return transaction;

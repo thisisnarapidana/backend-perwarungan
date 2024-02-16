@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-  const detailed_transaction = sequelize.define('detailed_transaction', {
+  const detailed_transaction = sequelize.define("detailed_transaction", {
     detailed_transaction_id: {
       type: DataTypes.STRING,
-      primaryKey: true
+      primaryKey: true,
     },
     transaction_id: {
       type: DataTypes.STRING,
@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     qty_stock_change: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
     },
   });
 
