@@ -8,9 +8,10 @@ router.put("/", async (req, res) => {
 
     const detailedTransaction = await db.detailed_transaction.findOne({
       where: { detailed_transaction_id: detailed_transaction_id },
-      include: [{ model: db.transaction, attributes: ["buyer_id"] }],
+      include: [{ model: db.transaction, attributes: ["buyer_id", "payment_status"] }],
     });
 
+    if(detailedTransaction.transaction.payment_status === "pending") return res.status(405);
     if (detailedTransaction.dataValues.status === "33") return res.status(400);
 
     await db.detailed_transaction.update(

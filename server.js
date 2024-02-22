@@ -16,6 +16,7 @@ const transactionController = require("./controllers/transactionController");
 const detailController = require("./controllers/detailController");
 const spotifyController = require("./controllers/spotifyController");
 const socketController = require("./controllers/socketController");
+const callbackController = require("./controllers/callbackController");
 
 const app = express();
 app.use(cors());
@@ -28,6 +29,7 @@ app.use("/transaction", transactionController);
 app.use("/item", itemController);
 app.use("/detail", detailController);
 app.use("/spotify", spotifyController);
+app.use("/callback", callbackController);
 
 const PORT = process.env.PORT;
 const server = http.createServer(app);

@@ -2,16 +2,20 @@ const db = require("../../models");
 const router = require("express").Router();
 const randomID = require("../../components/randomID");
 const socketController = require("../../controllers/socketController");
+const createTransaction = require("../../components/createPaymentMidTrans");
 
 router.post("/", async (req, res) => {
   try {
-    const { table_id, items } = req.body;
+    const { table_id, items, payment_type } = req.body;
 
     const cek = await db.table.findOne({
       where: { table_id: table_id },
     });
-    console.log("processing transaction");
     if (!cek) throw new Error("meja tidak tersedia");
+
+    let paymentStatus = "";
+    if(payment_type === "cash") paymentStatus = "paid";
+    else paymentStatus = "pending";
 
     await db.sequelize.sync();
 
@@ -29,6 +33,8 @@ router.post("/", async (req, res) => {
           buyer_id: req.ses.user_id,
           // clerk_id: "kasir",
           table_id: table_id,
+          payment_type: payment_type,
+          payment_status: paymentStatus,
         },
         { transaction: t },
       );
@@ -70,18 +76,17 @@ router.post("/", async (req, res) => {
         );
       }
 
-      //2 februari
-      // await db.user.update(
-      //   { balance: db.sequelize.literal(`balance + ${totalPrice}`) },
-      //   { where: { user_id: req.ses.user_id }, transaction: t },
-      // );
-
+      let emoneyTransaction;
+      if(payment_type !== "cash") emoneyTransaction = await createTransaction(Tid, totalPrice);
+      
       await t.commit();
+
+      //tell to all clerk
       socketController.emitTransaction(Tid);
 
       res
         .status(200)
-        .json({ message: message + "transaction created successfully." });
+        .json({ message: message + "transaction created successfully.", emoneyRedirectUrl: emoneyTransaction.redirectUrl });
     } catch (error) {
       await t.rollback();
       console.error("Transaction failed:", error);

@@ -14,31 +14,21 @@ var routerCheckout = require("require-directory")(
 router.use("/mytransactions", auth(["guest"]), routerCheckout.myTransactions);
 
 //get all being processed
-router.use(
-  "/process",
-  auth(["admin", "clerk"]),
-  routerCheckout.transactionInProcess,
-);
+router.use("/process",auth(["admin", "clerk"]),routerCheckout.transactionInProcess);
 
 //edit
 router.use("/process", auth(["clerk"]), routerCheckout.editTransactionProcess);
 
 //cancel
-router.use(
-  "/process",
-  auth(["clerk", "guest"]),
-  routerCheckout.cancelTransactionProcess,
-);
+router.use("/process",auth(["clerk", "guest"]),routerCheckout.cancelTransactionProcess);
 
 //get all user transaction still processed or not
-router.use(
-  "/usertransaction",
-  auth(["clerk"], ["guest"]),
-  routerCheckout.userTransaction,
-);
+router.use("/usertransaction", auth(["clerk"], ["guest"]), routerCheckout.userTransaction);
 
 router.use("/checkout", auth(["guest"]), routerCheckout.checkout);
 
 router.use("/kulakan", auth(["admin", "clerk"]), routerCheckout.kulakan);
+
+router.get("/:transaction_id", auth(["guest"]), routerCheckout.retrieveSpecificTransaction);
 
 module.exports = router;

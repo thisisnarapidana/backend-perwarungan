@@ -4,6 +4,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    payment_type: {
+      type: DataTypes.STRING,
+    },
+    payment_status: {
+      type: DataTypes.STRING,
+    },
+    payment_guarantee: {
+      type: DataTypes.STRING,
+    },
     buyer_id: {
       type: DataTypes.STRING,
     },
